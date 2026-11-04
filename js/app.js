@@ -2502,6 +2502,8 @@ function dealCards() {
 			hidePlayerQr(player);
 		}
 	});
+
+
 }
 
 // Execute the standard pre-flop steps: rotate dealer, post blinds, deal cards, start betting.
@@ -3469,6 +3471,31 @@ function init() {
 	if (savedGameSnapshot) {
 		openResumeGameOverlay(savedGameSnapshot);
 	}
+
+	const dulanHands = document.querySelectorAll(".hole-cards");
+
+	dulanHands.forEach(function(hand) {
+    	hand.addEventListener("click", function() {
+
+        // Find which player owns these cards
+        const seat = hand.closest(".seat");
+
+        const player = gameState.players.find(
+            p => getSeatRef(p)?.seatEl === seat
+        );
+
+        if (!player || !player.holeCards.every(Boolean)) return;
+
+        // Toggle visibility
+        const currentlyVisible = player.visibleHoleCards.every(Boolean);
+
+        setPlayerVisibleHoleCards(player, [
+            !currentlyVisible,
+            !currentlyVisible
+        ]);
+
+    });
+});
 }
 
 globalThis.poker = {
