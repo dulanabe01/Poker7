@@ -1912,7 +1912,7 @@ function getUnopenedPreflopLimpThreshold({
 		threshold += 0.03;
 	}
 
-	return Math.max(0.38, Math.min(0.54, threshold));
+	return Math.max(0.22, Math.min(0.54, threshold - 0.25));
 }
 
 function getUnopenedPreflopRangePolicy({
