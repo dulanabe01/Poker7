@@ -2153,6 +2153,17 @@ function getOpenLimpEligibility({
 	});
 	const rangeFit = openLimpMargin - requiredMargin;
 
+	if (handFamily === "offsuitJunk") {
+		const eligible = preflopScores.openLimpScore / 10 >= openLimpThreshold;
+		return {
+			eligible,
+			reason: eligible
+				? "offsuit_junk_above_limp_threshold"
+				: "offsuit_junk_below_limp_threshold",
+			requiredMargin: 0,
+			rangeFit: openLimpMargin,
+		};
+	}
 	if (
 		isOpenLimpBlockedByRealization({
 			preflopScores,
@@ -2201,28 +2212,6 @@ function getOpenLimpEligibility({
 		return Math.random() < mixFrequency
 			? { eligible: true, reason: "dominated_broadway_range_fit", requiredMargin, rangeFit }
 			: { eligible: false, reason: "dominated_broadway_range_mix_release", requiredMargin, rangeFit };
-	}
-	if (handFamily === "offsuitJunk") {
-		const realizationPenalty = getPreflopRealizationPenalty(preflopScores, {
-			route: "open-limp",
-			player,
-			spotContext,
-			preflopSeatClass,
-			activePlayerCount,
-		});
-		const requiredScore = Math.min(
-			4.60,
-			3.25 + Math.max(0, realizationPenalty - 0.45) * 4.80,
-		);
-		const eligible = rangePolicy.protectedActionSpot && preflopScores.openLimpScore >= requiredScore;
-		return {
-			eligible,
-			reason: eligible
-				? "protected_junk_realization_score"
-				: "offsuit_junk_context",
-			requiredMargin,
-			rangeFit,
-		};
 	}
 
 	return { eligible: false, reason: "not_limp_candidate", requiredMargin, rangeFit };
@@ -5252,6 +5241,16 @@ export function chooseBotAction(player, gameState) {
 		riverLowEdgeBlocked = true;
 		decision = { action: "fold" };
 		finalAdjustment = "river_low_edge_call_block";
+	}
+
+	if (
+		preflop && spotContext.unopened && !facingRaise && needsToCall &&
+		preflopScores.handFamily === "offsuitJunk" && decision.action === "fold"
+	) {
+		decision = { action: "call", amount: Math.min(player.chips, needToCall) };
+		decisionBranch = "unopened-limp";
+		decisionReason = "offsuit_junk_fold_guard";
+		finalAdjustment = "offsuit_junk_open_limp_guard";
 	}
 
 	const boardCtx = overPair
