@@ -39,7 +39,6 @@ import {
 	dealCommunityCardsForPhase,
 	dealHoleCardsForNewHand,
 	getBettingRoundStartExit,
-	getBlindLevelUpdateForHand,
 	getBotRevealDecision,
 	getCurrentPhase,
 	getNextBettingRoundStep,
@@ -2394,7 +2393,7 @@ function createPlayers() {
 			smallBlind: false,
 			bigBlind: false,
 			folded: false,
-			chips: 2000,
+			chips: 1500,
 			allIn: false,
 			totalBet: 0,
 			roundBet: 0,
@@ -2452,23 +2451,7 @@ function setDealer() {
 	enqueueNotification(`${gameState.players[0].name} is Dealer.`);
 }
 
-function updateBlindLevelForCurrentHand() {
-	const blindLevelUpdate = getBlindLevelUpdateForHand(totalHands, gameState);
-	if (!blindLevelUpdate) {
-		return;
-	}
-
-	applyGameStatePatch(blindLevelUpdate.gameStatePatch);
-	if (blindLevelUpdate.blindsChanged) {
-		enqueueNotification(
-			`Blinds are now ${gameState.smallBlind}/${gameState.bigBlind}.`,
-		);
-	}
-}
-
 function setBlinds() {
-	updateBlindLevelForCurrentHand();
-
 	const blindPlan = postBlinds(gameState);
 	applyPlayerPatches(blindPlan.playerPatches);
 	applyGameStatePatch(blindPlan.gameStatePatch);
@@ -3526,7 +3509,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-11-08-v2";
+const SERVICE_WORKER_VERSION = "2026-11-08-v3";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 initServiceWorker({

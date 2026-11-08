@@ -4625,6 +4625,13 @@ export function chooseBotAction(player, gameState) {
 		}
 	}
 
+	if (
+		!decision && preflop && !useHarringtonStrategy && !facingRaise &&
+		preflopRaiseCount === 0 && preflopScores.handFamily === "dominatedOffsuitBroadway"
+	) {
+		raiseThreshold = Math.max(1, raiseThreshold - 1.35);
+	}
+
 	if (!decision && isUnopenedPreflopActionSpot) {
 		const openRangePolicy = getUnopenedPreflopRangePolicy({
 			player,
