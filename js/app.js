@@ -54,6 +54,7 @@ import {
 	recordPlayerActionStats,
 	resolveShowdown,
 	resolveTurnAction,
+	shuffleArray,
 } from "./gameEngine.js";
 import QrCreator from "./qr-creator.js";
 import {
@@ -2355,7 +2356,9 @@ function startGame() {
 function createPlayers() {
 	gameState.players = [];
 	gameState.allPlayers = [];
-	let botIndex = 1;
+	const botNames = ["Shaun", "Ritvik", "Arvind", "Oshen", "David"];
+	shuffleArray(botNames);
+	let botIndex = 0;
 	for (const seatRef of seatRefs) {
 		seatRef.playerSeatIndex = null;
 		seatRef.clearActionLabelState = null;
@@ -2364,7 +2367,7 @@ function createPlayers() {
 			continue;
 		}
 		if (seatRef.nameEl.textContent.trim() === "") {
-			seatRef.nameEl.textContent = `Bot ${botIndex++}`;
+			seatRef.nameEl.textContent = botNames[botIndex++ % botNames.length];
 			renderSeatSetupState(seatRef, { isBot: true });
 		} else {
 			renderSeatSetupState(seatRef, { isBot: false });
@@ -3509,7 +3512,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-11-08-v3";
+const SERVICE_WORKER_VERSION = "2026-11-08-v4";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 initServiceWorker({
