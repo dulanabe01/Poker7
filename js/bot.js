@@ -5244,13 +5244,25 @@ export function chooseBotAction(player, gameState) {
 	}
 
 	if (
-		preflop && spotContext.unopened && !facingRaise && needsToCall &&
+		preflop && !facingRaise && preflopRaiseCount === 0 && needsToCall &&
 		preflopScores.handFamily === "offsuitJunk" && decision.action === "fold"
 	) {
 		decision = { action: "call", amount: Math.min(player.chips, needToCall) };
-		decisionBranch = "unopened-limp";
+		decisionBranch = spotContext.limped ? "limped-call" : "unopened-limp";
 		decisionReason = "offsuit_junk_fold_guard";
 		finalAdjustment = "offsuit_junk_open_limp_guard";
+	}
+
+	if (
+		preflop && !facingRaise && preflopRaiseCount === 0 && needsToCall &&
+		(preflopScores.handFamily === "suitedJunk" ||
+			preflopScores.handFamily === "weakAxo" ||
+			preflopScores.handFamily === "weakKxo") && decision.action === "fold"
+	) {
+		decision = { action: "call", amount: Math.min(player.chips, needToCall) };
+		decisionBranch = spotContext.limped ? "limped-call" : "unopened-limp";
+		decisionReason = "weak_family_fold_guard";
+		finalAdjustment = "weak_family_limp_guard";
 	}
 
 	const boardCtx = overPair
