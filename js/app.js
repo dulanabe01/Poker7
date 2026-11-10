@@ -2356,7 +2356,7 @@ function startGame() {
 function createPlayers() {
 	gameState.players = [];
 	gameState.allPlayers = [];
-	const botNames = ["Shaun", "Ritvik", "Arvind", "Oshen", "David"];
+	const botNames = ["Shaun", "Ritvik", "David P", "David K", "Isaac"];
 	shuffleArray(botNames);
 	let botIndex = 0;
 	for (const seatRef of seatRefs) {
@@ -3512,7 +3512,7 @@ poker.init();
  * - AUTO_RELOAD_ON_SW_UPDATE: reload page once after an update
  -------------------------------------------------------------------------------------------------- */
 const USE_SERVICE_WORKER = true;
-const SERVICE_WORKER_VERSION = "2026-11-08-v4";
+const SERVICE_WORKER_VERSION = "2026-11-10-v1";
 const AUTO_RELOAD_ON_SW_UPDATE = true;
 
 initServiceWorker({
